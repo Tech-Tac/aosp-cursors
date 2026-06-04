@@ -22,7 +22,7 @@ const addShadow     = true;
 const shadowBlur    = 1;
 const shadowOffsetX = 0;
 const shadowOffsetY = 1;
-const shadowColor   = "#000";
+const shadowColor   = [0, 0, 0]; // range 0~1
 const shadowOpacity = 0.4;
 
 // convert android color attrs to color values
@@ -49,24 +49,26 @@ async function convertAndSave(inputData, outputPath){
 		const offset = -filterSpread;
 		const size   = 100 + filterSpread*2;
 
-		const filterXml = `
-		<defs>
-      <filter id="${filterId}" x="${offset}%" y="${offset}%" width="${size}%" height="${size}%" color-interpolation-filters="sRGB">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="${shadowBlur}" />
-        <feOffset dx="${shadowOffsetX}" dy="${shadowOffsetY}" result="offsetblur" />
-        <feFlood flood-color="${shadowColor}" flood-opacity="${shadowOpacity}" />
-        <feComposite in2="offsetblur" operator="in" />
-        <feMerge>
-          <feMergeNode />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-		</defs>
+		const filterXml = `	<defs>
+		<filter id="${filterId}" x="${offset}%" y="${offset}%" width="${size}%" height="${size}%" color-interpolation-filters="sRGB">
+			<feGaussianBlur in="SourceAlpha" stdDeviation="${shadowBlur}" result="blur" />
+			<feOffset in="blur" dx="${shadowOffsetX}" dy="${shadowOffsetY}" result="offset" />
+			<feColorMatrix in="offset" type="matrix" result="shadow"
+				values="0 0 0 0 ${shadowColor[0]}
+								0 0 0 0 ${shadowColor[1]}
+								0 0 0 0 ${shadowColor[2]}
+								0 0 0 ${shadowOpacity} 0" />
+			<feMerge>
+				<feMergeNode in="shadow" />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+	</defs>
 		`;
 			
 			modifiedSvg = modifiedSvg.replace(/(<svg[^>]*>)/, `$1\n${filterXml}<g filter="url(#${filterId})">`);
 			
-			modifiedSvg = modifiedSvg.replace("</svg>", "</g>\n</svg>");
+			modifiedSvg = modifiedSvg.replace("</svg>", "\t</g>\n</svg>");
 	}
 
 	Bun.write(outputPath, modifiedSvg);
