@@ -7,7 +7,7 @@ const themeName       = "AOSP Cursors";
 const themeIdentifier = "aosp-cursors";
 
 const sizes        = [18, 24, 30, 36, 42, 48, 56, 72, 96];
-const scales       = [ 1]; // blows up file size
+const scales       = [ 1]; // more values blow up file size
 
 const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
