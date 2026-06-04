@@ -4,7 +4,7 @@ import { transform } from "vector-drawable-svg";
 import { $ } from "bun";
 
 const themeName       = "AOSP Cursors";
-const themeIdentifier = "aosp_cursors";
+const themeIdentifier = "aosp-cursors";
 
 const sizes        = [18, 24, 30, 36, 42, 48, 56, 72, 96];
 const scales       = [ 1]; // blows up file size
