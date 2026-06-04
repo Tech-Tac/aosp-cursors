@@ -1,0 +1,7 @@
+{
+    "?attr/pointerIconVectorStroke": "#fff",
+    "?attr/pointerIconVectorStrokeInverse": "#000",
+
+    "?attr/pointerIconVectorFill": "#000",
+    "?attr/pointerIconVectorFillInverse": "#fff"
+}

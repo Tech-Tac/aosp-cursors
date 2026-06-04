@@ -1,0 +1,16 @@
+{
+  "name": "aosp_cursors",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "^1.3.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.8.0",
+    "vector-drawable-svg": "^1.1.4"
+  }
+}

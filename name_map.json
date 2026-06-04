@@ -1,0 +1,10 @@
+{
+  "arrow": "default",
+  "hand": "pointer",
+  "nodrop": "no-drop",
+
+  "horizontal-double-arrow":"ew-resize",
+  "vertical-double-arrow":"ns-resize",
+  "top-left-diagonal-double-arrow":"nwse-resize",
+  "top-right-diagonal-double-arrow":"nesw-resize"
+}
