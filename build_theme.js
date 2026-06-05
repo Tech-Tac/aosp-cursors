@@ -6,8 +6,8 @@ import { $ } from "bun";
 const themeName       = "AOSP Cursors";
 const themeIdentifier = "aosp-cursors";
 
-const sizes        = [18, 24, 30, 36, 42, 48, 56, 72, 96];
-const scales       = [ 1]; // more values blow up file size
+const sizes        = [18, 24, 30, /* 36, 42, 48, 56, 72, 96 */];
+const scales       = [ 1, 2, 3]; // more values blow up file size
 
 const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
@@ -17,12 +17,10 @@ const scalableDir  = outputDir + "/cursors_scalable";
 const legacyDir    = outputDir + "/cursors";
 
 const addShadow     = true;
-// this configuration closely matches the aosp raster cursor drawable images
-// even though the actual rendering in android seems to be thicker
 const shadowBlur    = 1;
 const shadowOffsetX = 0;
 const shadowOffsetY = 1;
-const shadowColor   = [0, 0, 0]; // range 0~1
+const shadowColor   = [0, 0, 0]; // rgb, range 0-1
 const shadowOpacity = 0.4;
 
 // convert android color attrs to color values
@@ -40,41 +38,45 @@ async function convertAndSave(inputData, outputPath){
 		override: colorMap
 	});
 
-	let modifiedSvg = svgContent;
+	let finalSvg = svgContent;
 
 	if (addShadow) {
 		const filterId = "fe-shadow";
 
-		const filterSpread = 20;
-		const offset = -filterSpread;
-		const size   = 100 + filterSpread*2;
+    const filterXml = `<defs>
+    <filter id="${filterId}" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" 
+        values="0 0 0 0 ${shadowColor[0]}
+                0 0 0 0 ${shadowColor[1]}
+                0 0 0 0 ${shadowColor[2]}
+                0 0 0 ${shadowOpacity} 0" />
+      <feGaussianBlur stdDeviation="${shadowBlur}" />
+    </filter>
+  </defs>`;
+    
+		// mmm regex
+    const svgMatch = finalSvg.match(/(<svg[^>]*>)([\s\S]*?)<\/svg>/);
 
-		const filterXml = `	<defs>
-		<filter id="${filterId}" x="${offset}%" y="${offset}%" width="${size}%" height="${size}%" color-interpolation-filters="sRGB">
-			<feGaussianBlur in="SourceAlpha" stdDeviation="${shadowBlur}" result="blur" />
-			<feOffset in="blur" dx="${shadowOffsetX}" dy="${shadowOffsetY}" result="offset" />
-			<feColorMatrix in="offset" type="matrix" result="shadow"
-				values="0 0 0 0 ${shadowColor[0]}
-								0 0 0 0 ${shadowColor[1]}
-								0 0 0 0 ${shadowColor[2]}
-								0 0 0 ${shadowOpacity} 0" />
-			<feMerge>
-				<feMergeNode in="shadow" />
-				<feMergeNode in="SourceGraphic" />
-			</feMerge>
-		</filter>
-	</defs>
-		`;
-			
-			modifiedSvg = modifiedSvg.replace(/(<svg[^>]*>)/, `$1\n${filterXml}<g filter="url(#${filterId})">`);
-			
-			modifiedSvg = modifiedSvg.replace("</svg>", "\t</g>\n</svg>");
+    if (svgMatch) {
+      const openingTag = svgMatch[1];
+      const innerContent = svgMatch[2].trim();
+
+			// I have to apply the shadow filter to a duplicate of the paths here because kwin
+			// doesn't like feMerge (it results in the whole thing being treated as a bitmap)
+      finalSvg = `${openingTag}
+  ${filterXml}
+  <g filter="url(#${filterId})" transform="translate(${shadowOffsetX}, ${shadowOffsetY})">
+    ${innerContent}
+  </g>
+  ${innerContent}
+</svg>`;
+    }
 	}
 
-	Bun.write(outputPath, modifiedSvg);
+	Bun.write(outputPath, finalSvg);
 }
 
-// delete and recreate directory
+// empty the output directory
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 
