@@ -6,8 +6,8 @@ import { $ } from "bun";
 const themeName       = "AOSP Cursors";
 const themeIdentifier = "aosp-cursors";
 
-const sizes        = [18, 24, 30, /* 36, 42, 48, 56, 72, 96 */];
-const scales       = [ 1, 2, 3]; // more values blow up file size
+const sizes        = [18, 24, 30, 36, 42, 48, 56, 72, 96];
+const scales       = [ 1]; // more values blow up file size
 
 const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
@@ -20,7 +20,7 @@ const addShadow     = true;
 const shadowBlur    = 1;
 const shadowOffsetX = 0;
 const shadowOffsetY = 1;
-const shadowColor   = [0, 0, 0]; // rgb, range 0-1
+const shadowColor   = "#000"
 const shadowOpacity = 0.4;
 
 // convert android color attrs to color values
@@ -45,11 +45,6 @@ async function convertAndSave(inputData, outputPath){
 
     const filterXml = `<defs>
     <filter id="${filterId}" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" 
-        values="0 0 0 0 ${shadowColor[0]}
-                0 0 0 0 ${shadowColor[1]}
-                0 0 0 0 ${shadowColor[2]}
-                0 0 0 ${shadowOpacity} 0" />
       <feGaussianBlur stdDeviation="${shadowBlur}" />
     </filter>
   </defs>`;
@@ -60,13 +55,15 @@ async function convertAndSave(inputData, outputPath){
     if (svgMatch) {
       const openingTag = svgMatch[1];
       const innerContent = svgMatch[2].trim();
+			let shadowContent = innerContent.replace(/\sid="[^"]+"/g, "");
+      shadowContent = shadowContent.replace(/\sfill="[^"]+"/g, ` fill="${shadowColor}"`);
 
 			// I have to apply the shadow filter to a duplicate of the paths here because kwin
-			// doesn't like feMerge (it results in the whole thing being treated as a bitmap)
+			// doesn't like feMerge (it results in the whole thing being treated as a static bitmap)
       finalSvg = `${openingTag}
   ${filterXml}
-  <g filter="url(#${filterId})" transform="translate(${shadowOffsetX}, ${shadowOffsetY})">
-    ${innerContent}
+  <g filter="url(#${filterId})" opacity="${shadowOpacity}" transform="translate(${shadowOffsetX}, ${shadowOffsetY})">
+    ${shadowContent}
   </g>
   ${innerContent}
 </svg>`;
