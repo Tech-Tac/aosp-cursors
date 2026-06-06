@@ -23,9 +23,9 @@ const shadowOffsetY = 1;
 const shadowColor   = "#000"
 const shadowOpacity = 0.4;
 
-// convert android color attrs to color values
+// maps android color attrs to color values
 const colorMap = await Bun.file("./color_map.json").json();
-// convert odd android pointer names to proper css names
+// maps odd android pointer names to proper css names
 const nameMap = await Bun.file("./name_map.json").json();
 // legacy and missing cursor aliases
 const aliasList = await Bun.file("./alias.list").text();

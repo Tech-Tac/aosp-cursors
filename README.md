@@ -1,25 +1,38 @@
 # AOSP Cursors for Linux
 
+![Banner](banner.png)
+
 This is a cursor theme for KDE and other environments that brings
 the default Android cursor set to your desktop, freshly extracted
 from AOSP source code and faithfully converted to scalable cursors
 for your pleasure, available in virtually all sizes and colors.
 
-## Customization
+## Installation
 
-You can further customize this cursor theme by editing the
-`color_map.json` file and the configuration variables at the top
-of `build_theme.js` then regenerating the theme by running
-`bun run build_theme.js`. Your theme will be ready in about 4 seconds
-and will be available as a `tar.gz` in the project directory,
-you can then drag or load the archive into your environment
-cursor configuration page.
+On KDE, go to System Settings > Colors & Themes > Cursors > Get New...
+and search for "AOSP Cursors" then click Install. It should be available
+in the Cursors page now, select it and press Apply.
 
-Please note that you need `kcursorgen` (preinstalled with Plasma)
-and `bun` to build this theme, you may then use the resulting theme
-file on any system without these dependencies installed.
+You can also download the latest `.tar.gz` file from releases or from the
+OpenDesktop store (https://www.opendesktop.org/p/2361737) then load it into
+your desktop environment's cursor configuration page, you can alternatively
+extract the archive into `~/.icons/`.
 
-The script should also convert cursor sets from other ROMs given they
+## Building & Customization
+
+You need the following dependencies to build this theme from source:
+- `bun` for the JavaScript runtime
+- `kcursorgen` (pre-installed with Plasma) for SVG to XCursor conversion
+
+Once those are installed you can then run `bun run build_theme.js` to build
+the theme, it should be ready in about 4 seconds as a `.tar.gz` file in the
+project directory.
+
+You can further customize the theme by editing the
+`color_map.json` file and the configuration variables at the top of
+`build_theme.js` then rebuilding.
+
+The script should also work with cursor vectors from other ROMs given they
 follow the same format, please open an issue if that doesn't work.
 
 ## Licenses
