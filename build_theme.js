@@ -217,7 +217,7 @@ console.log("Making archive...");
 await $`tar -cJf "${outputDir}/${themeIdentifier}-linux.tar.xz" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
 
 console.log("Done!");
-console.log(`Theme '${themeName}' saved as ${themeIdentifier}.tar.gz`);
+console.log(`Theme '${themeName}' saved as ${outputDir}/${themeIdentifier}-linux.tar.xz`);
 
 // ---- build windows theme ----
 if (buildWindows) {
