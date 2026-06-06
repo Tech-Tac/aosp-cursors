@@ -12,9 +12,13 @@ const scales       = [ 1]; // more values blow up file size
 const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
 
-const outputDir    = "./output";          // output directory
-const scalableDir  = outputDir + "/cursors_scalable";
-const legacyDir    = outputDir + "/cursors";
+const outputDir    = "./output";
+const linuxDir     = outputDir + "/linux";
+const scalableDir  = linuxDir  + "/cursors_scalable";
+const legacyDir    = linuxDir  + "/cursors";
+const windowsDir   = outputDir + "/windows";
+
+const buildWindows = true;
 
 const addShadow     = true;
 const shadowBlur    = 1;
@@ -24,9 +28,9 @@ const shadowColor   = "#000"
 const shadowOpacity = 0.4;
 
 // maps android color attrs to color values
-const colorMap = await Bun.file("./color_map.json").json();
+const colorMap  = await Bun.file("./color_map.json").json();
 // maps odd android pointer names to proper css names
-const nameMap = await Bun.file("./name_map.json").json();
+const nameMap   = await Bun.file("./name_map.json").json();
 // legacy and missing cursor aliases
 const aliasList = await Bun.file("./alias.list").text();
 
@@ -88,8 +92,6 @@ try {
 } catch (error) {
 	console.error("Error reading directory:", error);
 }
-
-console.log(files);
 
 // blazingly fast (🚀)
 await Promise.all(files.map(async (file) => {
@@ -200,19 +202,34 @@ console.log(`Created ${done} symlinks`);
 // ---- xcursor conversion ----
 const sizeString  = sizes.join(",");
 const scaleString = scales.join(",");
-await $`kcursorgen --svg-theme-to-xcursor --svg-dir=${scalableDir} --xcursor-dir=${legacyDir} --sizes=${sizeString} --scales=${scaleString}`;
+await $`kcursorgen --svg-theme-to-xcursor --svg-dir="${scalableDir}" --xcursor-dir="${legacyDir}" --sizes=${sizeString} --scales=${scaleString}`;
 
 // ---- theme index file ----
-await Bun.write(`${outputDir}/index.theme`, `[Icon Theme]
+await Bun.write(`${linuxDir}/index.theme`, `[Icon Theme]
 Name=${themeName}
 `);
 
 // ---- license notice ----
-await copyFile("NOTICE", `${outputDir}/NOTICE`)
+await copyFile("NOTICE", `${linuxDir}/NOTICE`)
 
-// ---- final packaging ----
+// ---- linux packaging ----
 console.log("Making archive...");
-await $`tar -czf ${themeIdentifier}.tar.gz --transform "s|^${outputDir}|${themeIdentifier}|" ${outputDir}`;
+await $`tar -cJf "${outputDir}/${themeIdentifier}-linux.tar.xz" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
 
 console.log("Done!");
 console.log(`Theme '${themeName}' saved as ${themeIdentifier}.tar.gz`);
+
+// ---- build windows theme ----
+if (buildWindows) {
+	console.log("Building Windows cursor theme...");
+	if (!Bun.which("x2wincurtheme")) {
+		console.log("x2wincurtheme was not found, please make sure win2xcur is installed");
+	}else{
+		await $`x2wincurtheme --name "${themeName}" --output "${windowsDir}" ${legacyDir}`;
+		console.log("Done!");
+
+		console.log("Making Windows archive...");
+		await $`zip -rjq "${outputDir}/${themeIdentifier}-windows.zip" "${windowsDir}"`;
+		console.log(`Windows theme saved as ${themeIdentifier}-windows.zip`);
+	}
+}

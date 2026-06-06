@@ -5,8 +5,7 @@ node_modules
 out
 dist
 output
-*.tgz
-*.tar.gz
+*.tar.*
 
 # code coverage
 coverage
