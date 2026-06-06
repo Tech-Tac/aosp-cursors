@@ -1,4 +1,4 @@
-# AOSP Cursors for Linux
+# AOSP Cursors for Linux & Windows
 
 ![Banner](banner.png)
 
