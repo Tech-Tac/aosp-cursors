@@ -18,7 +18,7 @@ const scalableDir  = linuxDir  + "/cursors_scalable";
 const legacyDir    = linuxDir  + "/cursors";
 const windowsDir   = outputDir + "/windows";
 
-const buildWindows = true;
+const buildWindows = false;
 
 const addShadow     = true;
 const shadowBlur    = 1;
