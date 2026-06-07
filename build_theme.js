@@ -74,7 +74,7 @@ async function convertAndSave(inputData, outputPath){
     }
 	}
 
-	Bun.write(outputPath, finalSvg);
+	await Bun.write(outputPath, finalSvg);
 }
 
 // empty the output directory
