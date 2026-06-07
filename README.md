@@ -25,7 +25,7 @@ extract it, right click `install.inf` and select "Install".
 
 You need the following dependencies to build this theme from source:
 - `bun` for the JavaScript runtime
-- `kcursorgen` (pre-installed with Plasma) for SVG to XCursor conversion
+- `kcursorgen` (part of the `breeze` package) for SVG to XCursor conversion
 - GNU `tar` for Linux packaging
 - optionally `win2xcur` (from pip) for building a windows theme
 - optionally `zip` for Windows packaging
