@@ -25,11 +25,11 @@ left_side w-resize
 watch wait
 fleur move
 ibeam text
+pointing_hand pointer
 draft handwriting
 pencil handwriting
 openhand grab
 closedhand grabbing
-left_ptr default
 left_ptr_help help
 left_ptr_watch progress
 half-busy progress
