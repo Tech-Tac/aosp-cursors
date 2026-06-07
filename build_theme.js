@@ -6,8 +6,15 @@ import { $ } from "bun";
 const themeName       = "AOSP Cursors";
 const themeIdentifier = "aosp-cursors";
 
-const sizes        = [18, 24, 30, 36, 42, 48, 56, 72, 96];
-const scales       = [ 1]; // more values blow up file size
+const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
+const scales        = [ 1]; // more values blow up file size
+
+const addShadow     = true;
+const shadowBlur    = 1;
+const shadowOffsetX = 0;
+const shadowOffsetY = 1;
+const shadowColor   = "#000"
+const shadowOpacity = 0.4;
 
 const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
@@ -19,13 +26,6 @@ const legacyDir    = linuxDir  + "/cursors";
 const windowsDir   = outputDir + "/windows";
 
 const buildWindows = false;
-
-const addShadow     = true;
-const shadowBlur    = 1;
-const shadowOffsetX = 0;
-const shadowOffsetY = 1;
-const shadowColor   = "#000"
-const shadowOpacity = 0.4;
 
 // maps android color attrs to color values
 const colorMap  = await Bun.file("./color_map.json").json();
@@ -64,6 +64,7 @@ async function convertAndSave(inputData, outputPath){
 
 			// I have to apply the shadow filter to a duplicate of the paths here because kwin
 			// doesn't like feMerge (it results in the whole thing being treated as a static bitmap)
+			// and even this is still not perfect, see https://bugs.kde.org/show_bug.cgi?id=521145
       finalSvg = `${openingTag}
   ${filterXml}
   <g filter="url(#${filterId})" opacity="${shadowOpacity}" transform="translate(${shadowOffsetX}, ${shadowOffsetY})">
