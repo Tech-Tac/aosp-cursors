@@ -215,7 +215,7 @@ await copyFile("NOTICE", `${linuxDir}/NOTICE`);
 
 // ---- linux packaging ----
 console.log("Making archive...");
-const archiveName = `{themeIdentifier}-linux.tar.xz`;
+const archiveName = `${themeIdentifier}-linux.tar.xz`;
 await $`tar -cJf "${outputDir}/${archiveName}" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
 
 console.log("Done!");
@@ -233,7 +233,7 @@ if (buildWindows) {
 		await copyFile("NOTICE", `${windowsDir}/NOTICE`);
 
 		console.log("Making Windows archive...");
-		const winArchiveName = `{themeIdentifier}-windows.zip`;
+		const winArchiveName = `${themeIdentifier}-windows.zip`;
 		await $`zip -rjq "${outputDir}/${winArchiveName}" "${windowsDir}"`;
 		console.log(`Windows theme saved as ${winArchiveName}`);
 	}
