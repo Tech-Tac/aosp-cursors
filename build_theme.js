@@ -20,10 +20,10 @@ const iconDefDir   = "./vector";          // holds pointer-icon definitions
 const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
 
 const outputDir    = "./output";
-const linuxDir     = outputDir + "/linux";
-const scalableDir  = linuxDir  + "/cursors_scalable";
-const legacyDir    = linuxDir  + "/cursors";
-const windowsDir   = outputDir + "/windows";
+const linuxDir     = `${outputDir}/linux`;
+const scalableDir  = `${linuxDir}/cursors_scalable`;
+const legacyDir    = `${linuxDir}/cursors`;
+const windowsDir   = `${outputDir}/windows`;
 
 const buildWindows = false;
 
@@ -137,7 +137,7 @@ await Promise.all(files.map(async (file) => {
 		for(const item of itemsArray){
 			const frameDrawable = item["@_android:drawable"].replace("@drawable/", "");
 			const frameDuration = parseInt(item["@_android:duration"]) ?? 1;
-			const frameFilename = frameDrawable + ".svg";
+			const frameFilename = `${frameDrawable}.svg`;
 
 			const frameContent = await Bun.file(`${drawableDir}/${iconName}/${frameDrawable}.xml`).text();
 			const frameObj = xmlParser.parse(frameContent);
@@ -156,7 +156,7 @@ await Promise.all(files.map(async (file) => {
 	}else {
 		const shapeSize = parseFloat(jsonObj["vector"]["@_android:viewportWidth"]) ?? 24;
 
-		const filename = pointerName + ".svg";
+		const filename = `${pointerName}.svg`;
 
 		await convertAndSave(drawableContent, `${scalableDir}/${standardName}/${filename}`)
 
@@ -181,7 +181,7 @@ for(const line of lines){
 
 	if (cleanLine.startsWith("#") || cleanLine === "") continue;
 
-	if(cleanLine.indexOf(" ") == -1 || cleanLine.indexOf(" ") != cleanLine.lastIndexOf(" ")){
+	if(cleanLine.indexOf(" ") === -1 || cleanLine.indexOf(" ") !== cleanLine.lastIndexOf(" ")){
 		console.log("Invalid line. syntax: <alias> <target>");
 		continue;
 	}
@@ -215,10 +215,11 @@ await copyFile("NOTICE", `${linuxDir}/NOTICE`);
 
 // ---- linux packaging ----
 console.log("Making archive...");
-await $`tar -cJf "${outputDir}/${themeIdentifier}-linux.tar.xz" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
+const archiveName = `{themeIdentifier}-linux.tar.xz`;
+await $`tar -cJf "${outputDir}/${archiveName}" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
 
 console.log("Done!");
-console.log(`Theme '${themeName}' saved as ${outputDir}/${themeIdentifier}-linux.tar.xz`);
+console.log(`Theme '${themeName}' saved as ${outputDir}/${archiveName}`);
 
 // ---- build windows theme ----
 if (buildWindows) {
@@ -232,7 +233,8 @@ if (buildWindows) {
 		await copyFile("NOTICE", `${windowsDir}/NOTICE`);
 
 		console.log("Making Windows archive...");
-		await $`zip -rjq "${outputDir}/${themeIdentifier}-windows.zip" "${windowsDir}"`;
-		console.log(`Windows theme saved as ${themeIdentifier}-windows.zip`);
+		const winArchiveName = `{themeIdentifier}-windows.zip`;
+		await $`zip -rjq "${outputDir}/${winArchiveName}" "${windowsDir}"`;
+		console.log(`Windows theme saved as ${winArchiveName}`);
 	}
 }
