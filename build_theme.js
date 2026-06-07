@@ -210,7 +210,7 @@ Name=${themeName}
 `);
 
 // ---- license notice ----
-await copyFile("NOTICE", `${linuxDir}/NOTICE`)
+await copyFile("NOTICE", `${linuxDir}/NOTICE`);
 
 // ---- linux packaging ----
 console.log("Making archive...");
@@ -227,6 +227,8 @@ if (buildWindows) {
 	}else{
 		await $`x2wincurtheme --name "${themeName}" --output "${windowsDir}" ${legacyDir}`;
 		console.log("Done!");
+
+		await copyFile("NOTICE", `${windowsDir}/NOTICE`);
 
 		console.log("Making Windows archive...");
 		await $`zip -rjq "${outputDir}/${themeIdentifier}-windows.zip" "${windowsDir}"`;
