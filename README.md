@@ -26,14 +26,17 @@ extract it, right click `install.inf` and select "Install".
 You need the following dependencies to build this theme from source:
 - `bun` for the JavaScript runtime
 - `kcursorgen` (pre-installed with Plasma) for SVG to XCursor conversion
+- GNU `tar` for Linux packaging
 - optionally `win2xcur` (from pip) for building a windows theme
+- optionally `zip` for Windows packaging
 
-Once those are installed you can then run `bun run build_theme.js` to build
-the theme, it should be ready in about 4 seconds as a `.tar.xz` file in the
-`output` directory.
+After cloning the repo, run `bun install` to install the npm dependencies.
+
+Once everything is ready you can run `bun run build_theme.js` to build
+the theme, it should be ready as a `.tar.xz` file in the `output` directory.
 
 Please note that building a Windows theme directly on Windows is, ironically,
-currently not supported due to it depending on `kcursorgen`, you may want to
+unsupported currently due to the dependence on `kcursorgen`, you may want to
 try WSL or another Linux environment of some sort.
 
 You can further customize the theme by editing the `color_map.json` file and
