@@ -16,8 +16,9 @@ const shadowOffsetY = 1;
 const shadowColor   = "#000"
 const shadowOpacity = 0.4;
 
-const iconDefDir   = "./vector";          // holds pointer-icon definitions
-const drawableDir  = "./vector/drawable"; // holds the actual vector drawables
+const iconDefDir   = "./vector"
+const drawableDir  = `${iconDefDir}/drawable`;
+const nestFrames   = true; // whether animation frames are stored in a subdirectory drawableDir/iconName/
 
 const outputDir    = "./output";
 const linuxDir     = `${outputDir}/linux`;
@@ -52,27 +53,25 @@ async function convertAndSave(inputData, outputPath){
       <feGaussianBlur stdDeviation="${shadowBlur}" />
     </filter>
   </defs>`;
-    
-		// mmm regex
-    const svgMatch = finalSvg.match(/(<svg[^>]*>)([\s\S]*?)<\/svg>/);
+	
+		const contentStart = finalSvg.indexOf(">") + 1;
 
-    if (svgMatch) {
-      const openingTag = svgMatch[1];
-      const innerContent = svgMatch[2].trim();
-			let shadowContent = innerContent.replace(/\sid="[^"]+"/g, "");
-      shadowContent = shadowContent.replace(/\sfill="[^"]+"/g, ` fill="${shadowColor}"`);
+		const openingTag   = finalSvg.slice(0, contentStart);
+		const innerContent = finalSvg.slice(contentStart, finalSvg.lastIndexOf("</svg>")).trim();
 
-			// I have to apply the shadow filter to a duplicate of the paths here because kwin
-			// doesn't like feMerge (it results in the whole thing being treated as a static bitmap)
-			// and even this is still not perfect, see https://bugs.kde.org/show_bug.cgi?id=521145
-      finalSvg = `${openingTag}
+		const shadowContent = innerContent.replace(/\sid="[^"]+"/g, "")
+																			.replace(/\sfill="[^"]+"/g, ` fill="${shadowColor}"`);
+
+		// I have to apply the shadow filter to a duplicate of the paths here because kwin
+		// doesn't like feMerge (it results in the whole thing being treated as a static bitmap)
+		// and even this is still not perfect, see https://bugs.kde.org/show_bug.cgi?id=521145
+		finalSvg = `${openingTag}
   ${filterXml}
   <g filter="url(#${filterId})" opacity="${shadowOpacity}" transform="translate(${shadowOffsetX}, ${shadowOffsetY})">
     ${shadowContent}
   </g>
   ${innerContent}
 </svg>`;
-    }
 	}
 
 	await Bun.write(outputPath, finalSvg);
@@ -82,31 +81,31 @@ async function convertAndSave(inputData, outputPath){
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 
-let files = [];
+let iconDefs = [];
 
 try {
 	const entries = await readdir(iconDefDir, { withFileTypes: true });
 
-	files = entries
-	.filter(entry => entry.isFile())
+	iconDefs = entries
+	.filter(entry => entry.isFile() && entry.name.endsWith("_icon.xml"))
 	.map(entry => entry.name);
 } catch (error) {
 	console.error("Error reading directory:", error);
 }
 
 // blazingly fast (🚀)
-await Promise.all(files.map(async (file) => {
+await Promise.all(iconDefs.map(async (iconDef) => {
 	// ---- metadata extraction ----
 
-	const iconName = file.replace("_vector_icon.xml", "");
+	const iconName = iconDef.replace("_vector_icon.xml", "");
 	const pointerName = iconName.replace("pointer_", "");
 	let standardName = pointerName.replaceAll("_", "-");
 	const mappedName = nameMap[standardName];
 	if (mappedName !== undefined) {
 		standardName = mappedName;
 	}
-
-	const iconXml = await Bun.file(`${iconDefDir}/${file}`).text();
+	
+	const iconXml = await Bun.file(`${iconDefDir}/${iconDef}`).text();
 	const iconObj = xmlParser.parse(iconXml);
 	
 	// android animated cursors have one static hotspot while other platforms support setting it per frame
@@ -139,7 +138,8 @@ await Promise.all(files.map(async (file) => {
 			const frameDuration = parseInt(item["@_android:duration"]) ?? 1;
 			const frameFilename = `${frameDrawable}.svg`;
 
-			const frameContent = await Bun.file(`${drawableDir}/${iconName}/${frameDrawable}.xml`).text();
+			const dirPrefix = nestFrames ? `${iconName}/` : "";
+			const frameContent = await Bun.file(`${drawableDir}/${dirPrefix}${frameDrawable}.xml`).text();
 			const frameObj = xmlParser.parse(frameContent);
 			const shapeSize = parseFloat(frameObj["vector"]["@_android:viewportWidth"]) ?? 24;
 
