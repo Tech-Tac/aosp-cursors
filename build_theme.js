@@ -9,11 +9,9 @@ const themeIdentifier = "aosp-cursors";
 // the optical size of your cursor shapes, NOT the canvas size!
 const	nominalSize   = 18;
 
+// should support up to 4-5x scaling for raster sizes
 const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
 const windowsSizes  = [32, 48, 64, 96, 128];
-
-// whether the script will build the theme for windows or for linux
-const buildWindows  = Bun.env.BUILD_WINDOWS === "true";
 
 const addShadow     = true;
 const shadowBlur    = 1;
@@ -30,10 +28,13 @@ const drawableDir  = `${iconDefDir}/drawable`;
 const nestFrames   = true;
 
 const outputDir    = "./output";
-const linuxDir     = `${outputDir}/linux`;
-const scalableDir  = `${linuxDir}/cursors_scalable`;
-const legacyDir    = `${linuxDir}/cursors`;
-const windowsDir   = `${outputDir}/windows`;
+const linuxDir     = `${outputDir}/linux`; // linux theme root
+const scalableDir  = `${linuxDir}/cursors_scalable`; // kde scalable cursor extension
+const legacyDir    = `${linuxDir}/cursors`; // xcursors (converted to windows cursors also)
+const windowsDir   = `${outputDir}/windows`; // windows cursors (.cur, .ani)
+
+// whether the script will build the theme for windows or for linux
+const buildWindows  = Bun.env.BUILD_WINDOWS === "true";
 
 // preferred canvas size for windows cursors
 const winMinSize   = 32;
@@ -238,7 +239,7 @@ Name=${themeName}
 	console.log("Done!");
 	console.log(`Theme '${themeName}' saved as ${outputDir}/${archiveName}`);
 }
-if (buildWindows) {
+else {
 	// ---- build windows theme ----
 	console.log("Building Windows cursor theme...");
 	if (!Bun.which("x2wincurtheme")) {
