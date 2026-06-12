@@ -35,6 +35,8 @@ After cloning the repo, run `bun install` to install the npm dependencies.
 Once everything is ready you can run `bun run build_theme.js` to build
 the theme, it should be ready as a `.tar.xz` file in the `output` directory.
 
+To build the theme for Windows, run `BUILD_WINDOWS=true bun run build_theme.js`.
+
 Please note that building a Windows theme directly on Windows is, ironically,
 unsupported currently due to the dependence on `kcursorgen`, you may want to
 try WSL or another Linux environment of some sort.

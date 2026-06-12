@@ -13,7 +13,7 @@ const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
 const windowsSizes  = [32, 48, 64, 96, 128];
 
 // whether the script will build the theme for windows or for linux
-const buildWindows  = false;
+const buildWindows  = Bun.env.BUILD_WINDOWS === "true";
 
 const addShadow     = true;
 const shadowBlur    = 1;
