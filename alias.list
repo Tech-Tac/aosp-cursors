@@ -39,7 +39,9 @@ split_v row-resize
 #### theme-specific ####
 progress wait
 not-allowed no-drop
-move all-scroll
+move default      # matches android
+# move all-scroll # matches windows/browsers
+# move grabbing   # matches breeze
 n-resize ns-resize
 s-resize ns-resize
 e-resize ew-resize

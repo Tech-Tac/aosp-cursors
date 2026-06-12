@@ -6,8 +6,14 @@ import { $ } from "bun";
 const themeName       = "AOSP Cursors";
 const themeIdentifier = "aosp-cursors";
 
+// the optical size of your cursor shapes, NOT the canvas size!
+const	nominalSize   = 18;
+
 const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
-const scales        = [ 1]; // more values blow up file size
+const windowsSizes  = [32, 48, 64, 96, 128];
+
+// whether the script will build the theme for windows or for linux
+const buildWindows  = false;
 
 const addShadow     = true;
 const shadowBlur    = 1;
@@ -16,9 +22,12 @@ const shadowOffsetY = 1;
 const shadowColor   = "#000"
 const shadowOpacity = 0.4;
 
+// holds the files with the hotspot definitions
 const iconDefDir   = "./vector"
+// holds the files with the actual vectors, may be the same as the above
 const drawableDir  = `${iconDefDir}/drawable`;
-const nestFrames   = true; // whether animation frames are stored in a subdirectory drawableDir/iconName/
+// whether animation frames are stored in a subdirectory: drawableDir/iconName/
+const nestFrames   = true;
 
 const outputDir    = "./output";
 const linuxDir     = `${outputDir}/linux`;
@@ -26,7 +35,8 @@ const scalableDir  = `${linuxDir}/cursors_scalable`;
 const legacyDir    = `${linuxDir}/cursors`;
 const windowsDir   = `${outputDir}/windows`;
 
-const buildWindows = false;
+// preferred canvas size for windows cursors
+const winMinSize   = 32;
 
 // maps android color attrs to color values
 const colorMap  = await Bun.file("./color_map.json").json();
@@ -45,6 +55,13 @@ async function convertAndSave(inputData, outputPath){
 
 	let finalSvg = svgContent;
 
+	if (buildWindows) {
+		finalSvg = finalSvg
+			.replace(/width="\d+"/, `width="${winMinSize}"`)
+			.replace(/height="\d+"/, `height="${winMinSize}"`)
+			.replace(/viewBox="0 0 \d+ \d+"/, `viewBox="0 0 ${winMinSize} ${winMinSize}"`);
+	}
+
 	if (addShadow) {
 		const filterId = "fe-shadow";
 
@@ -59,8 +76,9 @@ async function convertAndSave(inputData, outputPath){
 		const openingTag   = finalSvg.slice(0, contentStart);
 		const innerContent = finalSvg.slice(contentStart, finalSvg.lastIndexOf("</svg>")).trim();
 
-		const shadowContent = innerContent.replace(/\sid="[^"]+"/g, "")
-																			.replace(/\sfill="[^"]+"/g, ` fill="${shadowColor}"`);
+		const shadowContent = innerContent
+			.replace(/\sid="[^"]+"/g, "")
+			.replace(/\sfill="[^"]+"/g, ` fill="${shadowColor}"`);
 
 		// I have to apply the shadow filter to a duplicate of the paths here because kwin
 		// doesn't like feMerge (it results in the whole thing being treated as a static bitmap)
@@ -92,6 +110,9 @@ try {
 } catch (error) {
 	console.error("Error reading directory:", error);
 }
+
+// so that the final canvas is exactly the required size (32x)
+const nominalOrWinSize = buildWindows ? winMinSize : nominalSize;
 
 // blazingly fast (🚀)
 await Promise.all(iconDefs.map(async (iconDef) => {
@@ -140,8 +161,6 @@ await Promise.all(iconDefs.map(async (iconDef) => {
 
 			const dirPrefix = nestFrames ? `${iconName}/` : "";
 			const frameContent = await Bun.file(`${drawableDir}/${dirPrefix}${frameDrawable}.xml`).text();
-			const frameObj = xmlParser.parse(frameContent);
-			const shapeSize = parseFloat(frameObj["vector"]["@_android:viewportWidth"]) ?? 24;
 
 			await convertAndSave(frameContent, `${scalableDir}/${standardName}/${frameFilename}`)
 			
@@ -150,12 +169,10 @@ await Promise.all(iconDefs.map(async (iconDef) => {
 				"delay": frameDuration,
 				"hotspot_x": hotspotX,
 				"hotspot_y": hotspotY,
-				"nominal_size": shapeSize,
+				"nominal_size": nominalOrWinSize,
 			});
 		}
 	}else {
-		const shapeSize = parseFloat(jsonObj["vector"]["@_android:viewportWidth"]) ?? 24;
-
 		const filename = `${pointerName}.svg`;
 
 		await convertAndSave(drawableContent, `${scalableDir}/${standardName}/${filename}`)
@@ -164,7 +181,7 @@ await Promise.all(iconDefs.map(async (iconDef) => {
 			"filename": filename,
 			"hotspot_x": hotspotX,
 			"hotspot_y": hotspotY,
-			"nominal_size": shapeSize,
+			"nominal_size": nominalOrWinSize,
 		}];
 	}
 	await Bun.write(`${scalableDir}/${standardName}/metadata.json`, JSON.stringify(metadata))
@@ -177,9 +194,9 @@ const lines = aliasList.split("\n");
 let done = 0;
 
 for(const line of lines){
-	const cleanLine = line.trim().replaceAll(/\s+/g, " ");
+	const cleanLine = line.split("#")[0].trim().replaceAll(/\s+/g, " ");
 
-	if (cleanLine.startsWith("#") || cleanLine === "") continue;
+	if (cleanLine === "") continue;
 
 	if(cleanLine.indexOf(" ") === -1 || cleanLine.indexOf(" ") !== cleanLine.lastIndexOf(" ")){
 		console.log("Invalid line. syntax: <alias> <target>");
@@ -201,33 +218,33 @@ for(const line of lines){
 console.log(`Created ${done} symlinks`);
 
 // ---- xcursor conversion ----
-const sizeString  = sizes.join(",");
-const scaleString = scales.join(",");
-await $`kcursorgen --svg-theme-to-xcursor --svg-dir="${scalableDir}" --xcursor-dir="${legacyDir}" --sizes=${sizeString} --scales=${scaleString}`;
+const sizeString  = (buildWindows ? windowsSizes : sizes).join(",");
+await $`kcursorgen --svg-theme-to-xcursor --svg-dir=${scalableDir} --xcursor-dir=${legacyDir} --sizes=${sizeString}`;
 
-// ---- theme index file ----
-await Bun.write(`${linuxDir}/index.theme`, `[Icon Theme]
+if (!buildWindows) {
+	// ---- theme index file ----
+	await Bun.write(`${linuxDir}/index.theme`, `[Icon Theme]
 Name=${themeName}
 `);
 
-// ---- license notice ----
-await copyFile("NOTICE", `${linuxDir}/NOTICE`);
+	// ---- license notice ----
+	await copyFile("NOTICE", `${linuxDir}/NOTICE`);
 
-// ---- linux packaging ----
-console.log("Making archive...");
-const archiveName = `${themeIdentifier}-linux.tar.xz`;
-await $`tar -cJf "${outputDir}/${archiveName}" --transform "s|^${linuxDir}|${themeIdentifier}|" "${linuxDir}"`;
+	// ---- linux packaging ----
+	console.log("Making archive...");
+	const archiveName = `${themeIdentifier}-linux.tar.xz`;
+	await $`tar -cJf "${outputDir}/${archiveName}" --transform "s|^${linuxDir}|${themeIdentifier}|" ${linuxDir}`;
 
-console.log("Done!");
-console.log(`Theme '${themeName}' saved as ${outputDir}/${archiveName}`);
-
-// ---- build windows theme ----
+	console.log("Done!");
+	console.log(`Theme '${themeName}' saved as ${outputDir}/${archiveName}`);
+}
 if (buildWindows) {
+	// ---- build windows theme ----
 	console.log("Building Windows cursor theme...");
 	if (!Bun.which("x2wincurtheme")) {
 		console.log("x2wincurtheme was not found, please make sure win2xcur is installed");
 	}else{
-		await $`x2wincurtheme --name "${themeName}" --output "${windowsDir}" ${legacyDir}`;
+		await $`x2wincurtheme --name ${themeName} --output ${windowsDir} ${legacyDir}`;
 		console.log("Done!");
 
 		await copyFile("NOTICE", `${windowsDir}/NOTICE`);
