@@ -23,7 +23,7 @@ bottom_left_corner sw-resize
 xterm text
 left_side w-resize
 watch wait
-fleur move
+fleur all-scroll
 ibeam text
 pointing_hand pointer
 draft handwriting
