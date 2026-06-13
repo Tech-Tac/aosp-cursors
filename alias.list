@@ -39,9 +39,16 @@ split_v row-resize
 #### theme-specific ####
 progress wait
 not-allowed no-drop
-move default      # matches android
-# move all-scroll # matches windows/browsers
-# move grabbing   # matches breeze
+
+# Chromium on all platforms and firefox on windows map the css `move` cursor to the native `all-scroll` shape
+# while firefox on other platforms uses the native `move` shape, if available.
+# On Linux, KDE at least maps drag actions to `move` by default, which is aliased to the `dragging` shape by default
+# while Windows uses the default arrow shape for most drag actions.
+
+# move default    # emulates windows behavior
+# move all-scroll # emulates browser behavior
+move grabbing     # native linux behavior
+
 n-resize ns-resize
 s-resize ns-resize
 e-resize ew-resize
