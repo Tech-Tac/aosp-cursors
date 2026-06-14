@@ -248,7 +248,7 @@ else {
 		await $`x2wincurtheme --name ${themeName} --output ${windowsDir} ${legacyDir}`;
 		console.log("Done!");
 
-		await copyFile("NOTICE", `${windowsDir}/NOTICE`);
+		await copyFile("NOTICE", `${windowsDir}/NOTICE.txt`);
 
 		console.log("Making Windows archive...");
 		const winArchiveName = `${themeIdentifier}-windows.zip`;
