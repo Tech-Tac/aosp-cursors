@@ -9,7 +9,7 @@ const themeIdentifier = "aosp-cursors";
 // the optical size of your cursor shapes, NOT the canvas size!
 const	nominalSize   = 18;
 
-// should support up to 4-5x scaling for raster sizes
+// supports up to 5x dpi scaling (for raster formats)
 const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
 const windowsSizes  = [32, 48, 64, 96, 128];
 
@@ -30,13 +30,13 @@ const nestFrames   = true;
 const outputDir    = "./output";
 const linuxDir     = `${outputDir}/linux`; // linux theme root
 const scalableDir  = `${linuxDir}/cursors_scalable`; // kde scalable cursor extension
-const legacyDir    = `${linuxDir}/cursors`; // xcursors (converted to windows cursors also)
+const legacyDir    = `${linuxDir}/cursors`; // x11 cursors (also used to generate the windows cursors)
 const windowsDir   = `${outputDir}/windows`; // windows cursors (.cur, .ani)
 
 // whether the script will build the theme for windows or for linux
 const buildWindows  = Bun.env.BUILD_WINDOWS === "true";
 
-// preferred canvas size for windows cursors
+// default canvas size for windows cursors
 const winMinSize   = 32;
 
 // maps android color attrs to color values
@@ -112,7 +112,7 @@ try {
 	console.error("Error reading directory:", error);
 }
 
-// so that the final canvas is exactly the required size (32x)
+// so that the final canvases are exactly the required size on windows for all scales
 const nominalOrWinSize = buildWindows ? winMinSize : nominalSize;
 
 // blazingly fast (🚀)
