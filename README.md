@@ -26,6 +26,8 @@ extract it, right click `install.inf` and select "Install".
 You need the following dependencies to build this theme from source:
 - `bun` for the JavaScript runtime
 - `kcursorgen` (part of the `breeze` package) for SVG to XCursor conversion
+  - OR [this script](https://github.com/jinliu/svg-cursor/tree/main/svg-theme-to-xcursor)
+- `xcursorgen` (from `xorg-xcursorgen`), required by `kcursorgen`
 - GNU `tar` for Linux packaging
 - optionally `win2xcur` (from pip) for building a windows theme
 - optionally `zip` for Windows packaging
@@ -37,9 +39,9 @@ the theme, it should be ready as a `.tar.xz` file in the `output` directory.
 
 To build the theme for Windows, run `BUILD_WINDOWS=true bun run build_theme.js`.
 
-Please note that building a Windows theme directly on Windows is, ironically,
-unsupported currently due to the dependence on `kcursorgen`, you may want to
-try WSL or another Linux environment of some sort.
+Please note that building a Windows theme directly on Windows still requires
+getting xcursorgen to work, you may want to try WSL or another Linux
+environment of some sort.
 
 You can further customize the theme by editing the `color_map.json` file and
 the configuration variables at the top of `build_theme.js` then rebuilding.
