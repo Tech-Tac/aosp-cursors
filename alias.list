@@ -35,8 +35,11 @@ left_ptr_watch progress
 half-busy progress
 split_h col-resize
 split_v row-resize
+# add more as the need arises
 
 #### theme-specific ####
+# route standard shapes not found in the theme to the closest available ones
+
 progress wait
 not-allowed no-drop
 
@@ -59,3 +62,6 @@ se-resize nwse-resize
 nw-resize nwse-resize
 col-resize ew-resize
 row-resize ns-resize
+
+# used by some window managers when picking a window to force close
+pirate not-allowed
