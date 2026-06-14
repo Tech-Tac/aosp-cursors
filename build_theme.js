@@ -9,8 +9,8 @@ const themeIdentifier = "aosp-cursors";
 // the optical size of your cursor shapes, NOT the canvas size!
 const	nominalSize   = 18;
 
-// supports up to 5x dpi scaling (for raster formats)
-const sizes         = [18, 24, 30, 36, 42, 48, 56, 72, 96];
+// supports up to 4x dpi scaling for raster formats
+const sizes         = [18, 24, 30, 36, 42, 48, 54, 60, 66, 72];
 const windowsSizes  = [32, 48, 64, 96, 128];
 
 const addShadow     = true;
