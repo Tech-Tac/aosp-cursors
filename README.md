@@ -49,7 +49,11 @@ the configuration variables at the top of `build_theme.js` then rebuilding.
 The script should also work with cursor vectors from other ROMs given they
 follow the same format, please open an issue if that doesn't work.
 
-## Licenses
+## Licenses & Attribution
+
+The distributed theme is modified from original AOSP assets, with the changes
+being converting the VectorDrawables to SVGs, XCursors, and .ani/.cur files, in
+addition to extending the design with drop shadows.
 
 Android assets included in this project are property of their
 respective owners and are distributed under the Apache 2.0 license,
