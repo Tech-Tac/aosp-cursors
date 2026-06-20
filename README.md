@@ -2,10 +2,10 @@
 
 ![Banner](banner.png)
 
-This is a cursor theme for KDE and other environments that brings
-the default Android cursor set to your desktop, freshly extracted
-from AOSP source code and faithfully converted to scalable cursors
-for your pleasure, available in virtually all sizes and colors.
+This is a cursor theme for Linux and Windows that brings the default
+Android cursor set to your desktop, freshly extracted from AOSP source
+code and faithfully converted to sharp, scalable, multi-platform cursors,
+available in virtually all sizes and colors[\*](#building--customization).
 
 ## Installation
 
@@ -39,14 +39,17 @@ the theme, it should be ready as a `.tar.xz` file in the `output` directory.
 
 To build the theme for Windows, run `BUILD_WINDOWS=true bun run build_theme.js`.
 
-Please note that building a Windows theme directly on Windows still requires
-getting xcursorgen to work, you may want to try WSL or another Linux
-environment of some sort.
+> [!IMPORTANT]
+> Please note that building a Windows theme directly on Windows still requires
+> getting xcursorgen to work, you may want to try WSL or another Linux
+> environment of some sort.
 
-You can further customize the theme by editing the `color_map.json` file and
-the configuration variables at the top of `build_theme.js` then rebuilding.
+You can further customize the theme by editing `color_map.json` for stroke/fill
+color substitution, and the configuration variables at the top of `build_theme.js`
+for controlling available sizes and shadow parameters. Make sure to rebuild after
+making your desired changes.
 
-The script should also work with cursor vectors from other ROMs given they
+The script should also work with cursor drawables from other ROMs given that they
 follow the same format, please open an issue if that doesn't work.
 
 ## Licenses & Attribution
