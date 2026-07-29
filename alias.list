@@ -1,4 +1,4 @@
-##### legacy compatibility #####
+###### legacy compatibility ######
 
 cross				crosshair
 cross_reverse		crosshair
@@ -52,9 +52,9 @@ fleur				all-resize
 split_h				col-resize
 split_v				row-resize
 
-#################################
+##################################
 
-#### theme-specific mappings ####
+#### theme-specific fallbacks ####
 
 progress	wait
 
