@@ -1,67 +1,80 @@
-#### legacy compatibility ####
-cross crosshair
-cross_reverse crosshair
-diamond_cross crosshair
-tcross crosshair
-arrow default
-left_ptr default
-top_left_arrow default
-right_side e-resize
-sb_h_double_arrow ew-resize
-hand1 grab
-question_arrow help
-top_side n-resize
-top_right_corner ne-resize
-fd_double_arrow nesw-resize
-sb_v_double_arrow ns-resize
-top_left_corner nw-resize
-bd_double_arrow nwse-resize
-hand2 pointer
-bottom_side s-resize
-bottom_right_corner se-resize
-bottom_left_corner sw-resize
-xterm text
-left_side w-resize
-watch wait
-fleur all-scroll
-ibeam text
-pointing_hand pointer
-draft handwriting
-pencil handwriting
-openhand grab
-closedhand grabbing
-left_ptr_help help
-left_ptr_watch progress
-half-busy progress
-split_h col-resize
-split_v row-resize
-# add more as the need arises
+##### legacy compatibility #####
 
-#### theme-specific ####
-# route standard shapes not found in the theme to the closest available ones
+cross				crosshair
+cross_reverse		crosshair
+diamond_cross		crosshair
+tcross				crosshair
 
-progress wait
-not-allowed no-drop
+arrow				default
+left_ptr			default
+top_left_arrow		default
 
-# Chromium on all platforms and firefox on windows map the css `move` cursor to the native `all-scroll` shape
-# while firefox on other platforms uses the native `move` shape, if available.
-# On Linux, KDE at least maps drag actions to `move` by default, which is aliased to the `dragging` shape by default
-# while Windows uses the default arrow shape for most drag actions.
+hand2				pointer
+pointing_hand		pointer
 
-# move default    # emulates windows behavior
-# move all-scroll # emulates browser behavior
-move grabbing     # native linux behavior
+half-busy			progress
+left_ptr_watch		progress
 
-n-resize ns-resize
-s-resize ns-resize
-e-resize ew-resize
-w-resize ew-resize
-ne-resize nesw-resize
-sw-resize nesw-resize
-se-resize nwse-resize
-nw-resize nwse-resize
-col-resize ew-resize
-row-resize ns-resize
+watch				wait
 
-# used by some window managers when picking a window to force close
-pirate not-allowed
+xterm				text
+ibeam				text
+
+question_arrow		help
+left_ptr_help		help
+
+hand1				grab
+openhand			grab
+
+closedhand			grabbing
+
+draft				handwriting
+pencil				handwriting
+
+top_side			n-resize
+right_side			e-resize
+bottom_side			s-resize
+left_side			w-resize
+
+fleur				all-scroll
+
+top_right_corner	ne-resize
+top_left_corner		nw-resize
+bottom_right_corner	se-resize
+bottom_left_corner	sw-resize
+
+sb_h_double_arrow	ew-resize
+sb_v_double_arrow	ns-resize
+
+fd_double_arrow		nesw-resize
+bd_double_arrow		nwse-resize
+
+split_h				col-resize
+split_v				row-resize
+
+#################################
+
+#### theme-specific mappings ####
+
+progress	wait
+
+not-allowed	no-drop
+pirate		not-allowed
+
+# move		all-scroll
+move		grabbing
+
+n-resize	ns-resize
+s-resize	ns-resize
+
+e-resize	ew-resize
+w-resize	ew-resize
+
+ne-resize	nesw-resize
+sw-resize	nesw-resize
+
+nw-resize	nwse-resize
+se-resize	nwse-resize
+
+col-resize	ew-resize
+row-resize	ns-resize
