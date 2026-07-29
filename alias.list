@@ -36,8 +36,6 @@ right_side			e-resize
 bottom_side			s-resize
 left_side			w-resize
 
-fleur				all-scroll
-
 top_right_corner	ne-resize
 top_left_corner		nw-resize
 bottom_right_corner	se-resize
@@ -48,6 +46,8 @@ sb_v_double_arrow	ns-resize
 
 fd_double_arrow		nesw-resize
 bd_double_arrow		nwse-resize
+
+fleur				all-resize
 
 split_h				col-resize
 split_v				row-resize
@@ -61,7 +61,8 @@ progress	wait
 not-allowed	no-drop
 pirate		not-allowed
 
-# move		all-scroll
+all-scroll	all-resize
+
 move		grabbing
 
 n-resize	ns-resize
