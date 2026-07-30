@@ -41,7 +41,7 @@ const winMinSize   = 32;
 
 // maps android color attrs to color values
 const colorMap  = await Bun.file("./color_map.json").json();
-// maps odd android pointer names to proper css names
+// maps odd android pointer names to standard names
 const nameMap   = await Bun.file("./name_map.json").json();
 // legacy and missing cursor aliases
 const aliasList = await Bun.file("./alias.list").text();

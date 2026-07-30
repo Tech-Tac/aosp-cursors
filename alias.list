@@ -1,16 +1,8 @@
 ###### legacy compatibility ######
 
-cross				crosshair
-cross_reverse		crosshair
-diamond_cross		crosshair
-tcross				crosshair
-
 arrow				default
 left_ptr			default
 top_left_arrow		default
-
-hand2				pointer
-pointing_hand		pointer
 
 half-busy			progress
 left_ptr_watch		progress
@@ -20,6 +12,9 @@ watch				wait
 xterm				text
 ibeam				text
 
+hand2				pointer
+pointing_hand		pointer
+
 question_arrow		help
 left_ptr_help		help
 
@@ -27,6 +22,11 @@ hand1				grab
 openhand			grab
 
 closedhand			grabbing
+
+cross				crosshair
+cross_reverse		crosshair
+diamond_cross		crosshair
+tcross				crosshair
 
 draft				handwriting
 pencil				handwriting
@@ -56,26 +56,26 @@ split_v				row-resize
 
 #### theme-specific fallbacks ####
 
-progress	wait
+progress			wait
 
-not-allowed	no-drop
-pirate		not-allowed
+not-allowed			no-drop
+pirate				not-allowed
 
-all-scroll	all-resize
+all-scroll			all-resize
 
-move		grabbing
+move				grabbing
 
-n-resize	ns-resize
-s-resize	ns-resize
+n-resize			ns-resize
+s-resize			ns-resize
 
-e-resize	ew-resize
-w-resize	ew-resize
+e-resize			ew-resize
+w-resize			ew-resize
 
-ne-resize	nesw-resize
-sw-resize	nesw-resize
+ne-resize			nesw-resize
+sw-resize			nesw-resize
 
-nw-resize	nwse-resize
-se-resize	nwse-resize
+nw-resize			nwse-resize
+se-resize			nwse-resize
 
-col-resize	ew-resize
-row-resize	ns-resize
+col-resize			ew-resize
+row-resize			ns-resize
