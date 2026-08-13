@@ -48,7 +48,7 @@ const aliasList = await Bun.file("./alias.list").text();
 
 const xmlParser = new XMLParser({ ignoreAttributes: false });
 
-async function convertAndSave(inputData, outputPath){
+async function processVector(inputData, outputPath){
 	const svgContent = transform(inputData, {
 		pretty: true,
 		override: colorMap
@@ -163,7 +163,7 @@ await Promise.all(iconDefs.map(async (iconDef) => {
 			const dirPrefix = nestFrames ? `${iconName}/` : "";
 			const frameContent = await Bun.file(`${drawableDir}/${dirPrefix}${frameDrawable}.xml`).text();
 
-			await convertAndSave(frameContent, `${scalableDir}/${standardName}/${frameFilename}`)
+			await processVector(frameContent, `${scalableDir}/${standardName}/${frameFilename}`)
 			
 			metadata.push({
 				"filename": frameFilename,
@@ -176,7 +176,7 @@ await Promise.all(iconDefs.map(async (iconDef) => {
 	}else {
 		const filename = `${pointerName}.svg`;
 
-		await convertAndSave(drawableContent, `${scalableDir}/${standardName}/${filename}`)
+		await processVector(drawableContent, `${scalableDir}/${standardName}/${filename}`)
 
 		metadata = [{
 			"filename": filename,
